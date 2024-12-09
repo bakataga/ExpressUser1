@@ -1,0 +1,34 @@
+{
+  "name": "expressuser",
+  "version": "1.0.0",
+  "description": "test nodejs express",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bakataga/ExpressUser.git"
+  },
+  "author": "Bakataga",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bakataga/ExpressUser/issues"
+  },
+  "homepage": "https://github.com/bakataga/ExpressUser#readme",
+  "dependencies": {
+    "@types/node-fetch": "^2.6.12",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
+    "node-fetch": "^2.7.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}

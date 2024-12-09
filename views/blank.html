@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salut!</title>
+  </head>
+  <body>
+    <h1>salut!</h1>
+    <script>
+      // Fonction pour récupérer le token à partir de la session
+      async function getToken() {
+        try {
+          const response = await fetch("/get-token");
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const data = await response.json();
+          console.log("Token:", data.token);
+        } catch (error) {
+          console.error("There was a problem with the fetch operation:", error);
+        }
+      }
+
+      // Appeler la fonction pour récupérer le token
+      getToken();
+    </script>
+  </body>
+</html>

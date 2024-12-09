@@ -1,0 +1,41 @@
+La génération d’un JWT peut se résumer en 3 
+
+étapes assez élémentaires  :
+
+L’utilisateur se connecte depuis votre client qui va 
+envoyer une requête HTTP au serveur (via l’API du serveur)
+ avec, par exemple, un couple email/mot de passe
+Si les informations de connexion sont correctes, 
+le serveur génère un jeton JWT
+Le serveur envoie le JWT généré au client,
+ qui le conservera de son côté pour pouvoir le communiquer
+  au serveur à chaque nouvelle requête
+
+  JWT est l’acronyme de JSON Web Token, ce qui 
+  nous donne déjà un bon indice sur ce qu’est concrètement
+   un JWT. Pour aller plus loin, JSON est 
+  lui-même l’acronyme de JavaScript Object Notation.
+
+  Finalement, le JWT sera transmis à chaque 
+  requête du client au serveur dans les Headers 
+  (en-têtes) des requêtes HTTP. Plus précisément, 
+  le JWT devra être transmis dans le champ Authorization 
+  des Headers de la requête. Il devra également respecter 
+  le format de chaîne de caractère “Bearer ”.
+
+  Lorsqu’ils sont transmis entre client et serveur,
+   les JWT sont encodés en Base64.
+
+   Pas d’inquiétude, les JWT sont bien sécurisés. 
+   En fait, un JWT n’est pas un protocole d’authentification.
+    C’est simplement une spécification du format de 
+    jeton sécurisé. Cela signifie qu’il faut transmettre 
+    les jetons JWT à travers un protocole d’échange sécurisé
+     ! Et lorsqu’on parle d’architecture client/serveur, 
+     d’APIs et de requêtes HTTP, c’est forcément à HTTPS
+      que l’on fait référence.
+
+      Pour que votre utilisation de JWT soit sécurisé, 
+      il faudra donc toujours réaliser vos communications 
+      client/serveur de façon encryptée, 
+      c’est-à-dire en HTTPS (à l’aide d’un certificat SSL).
