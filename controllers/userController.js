@@ -1,11 +1,3 @@
-/* Ce fichier contient des fonctions pour gérer diverses actions liées aux utilisateurs :
-
-getUser : Crée une nouvelle instance d'utilisateur et envoie les informations de l'utilisateur en utilisant userView.
-showLogin : Envoie la vue de connexion.
-showRegister : Envoie la vue d'enregistrement.
-traiteLogin : Gère les requêtes de connexion en vérifiant le nom d'utilisateur et le mot de passe.
-traiteRegister : Gère les requêtes d'enregistrement en insérant un nouvel utilisateur dans la base de données. */
-
 const User = require("../models/user");
 const userView = require("../views/userView");
 const loginView = require("../views/loginView");
@@ -23,12 +15,12 @@ function getUser(req, res) {
   db.get(sql, [userId], (err, row) => {
     if (err) {
       console.error(err.message);
-      res.status(500).send("Error fetching user");
+      return res.status(500).send("Error fetching user");
     } else {
       if (row) {
-        res.json(row); // Send the user data as JSON
+        return res.json(row); // Send the user data as JSON
       } else {
-        res.status(404).send("User not found");
+        return res.status(404).send("User not found");
       }
     }
   });
@@ -50,7 +42,7 @@ function traiteLogin(req, res) {
   db.get(query, [username], (err, user) => {
     if (err) {
       console.error("Error fetching user from database:", err.message);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     } else if (user) {
       console.log("User found:", user);
       const passwordMatch = bcrypt.compareSync(password, user.password);
@@ -65,17 +57,16 @@ function traiteLogin(req, res) {
           }
         );
 
-        console.log("Token stocké dans la session:", req.session.token);
-        // Stocker le token dans une session
-        req.session.token = token;
+        console.log("Token généré:", token);
+        // Stocker le token dans un cookie
+        res.cookie("token", token, { httpOnly: true, secure: true }); // HttpOnly empêche l'accès via JavaScript, Secure nécessite HTTPS
         // Rediriger vers une page vierge
-        res.redirect("/blank");
+        return res.redirect("/blank");
       } else {
-        console.error("Session non initialisée");
-        res.status(401).json({ error: "Invalid username or password" });
+        return res.status(401).json({ error: "Invalid username or password" });
       }
     } else {
-      res.status(401).json({ error: "Invalid username or password" });
+      return res.status(401).json({ error: "Invalid username or password" });
     }
   });
 }
@@ -95,9 +86,9 @@ function traiteRegister(req, res) {
   db.run(query, [newUser.username, newUser.password], function (err) {
     if (err) {
       console.error("Error inserting user into database:", err.message);
-      res.send("Error registering user");
+      return res.send("Error registering user");
     } else {
-      res.send(`User registered with Username: ${newUser.username}`);
+      return res.send(`User registered with Username: ${newUser.username}`);
     }
   });
 }
@@ -107,12 +98,13 @@ function getUsers(req, res) {
   db.all(query, [], (err, rows) => {
     if (err) {
       console.error("Error fetching users from database:", err.message);
-      res.send("Error fetching users");
+      return res.send("Error fetching users");
     } else {
-      res.json(rows);
+      return res.json(rows);
     }
   });
 }
+
 const fs = require("fs");
 
 function exportUsersToJson(req, res) {
@@ -120,15 +112,15 @@ function exportUsersToJson(req, res) {
   db.all(query, [], (err, rows) => {
     if (err) {
       console.error("Error fetching users from database:", err.message);
-      res.send("Error fetching users");
+      return res.send("Error fetching users");
     } else {
       const jsonData = JSON.stringify(rows, null, 2);
       fs.writeFile("users.json", jsonData, (err) => {
         if (err) {
           console.error("Error writing to file:", err.message);
-          res.send("Error writing to file");
+          return res.send("Error writing to file");
         } else {
-          res.send("Users data has been written to users.json");
+          return res.send("Users data has been written to users.json");
         }
       });
     }
