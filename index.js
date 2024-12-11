@@ -1,7 +1,7 @@
 /* Ce fichier est le fichier principal du serveur. 
 Il configure un serveur Express et définit des routes pour les actions liées aux utilisateurs (connexion, enregistrement, etc.). 
 Il utilise body-parser pour analyser les corps des requêtes entrantes et cookie-parser pour gérer les cookies. */
-
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const {
@@ -23,13 +23,25 @@ const annonceRoutes = require("./routes/annoncesRoute");
 const cookieParser = require("cookie-parser");
 const adminRoutes = require("./routes/adminRoute");
 
+const sessionSecret = process.env.SESSION_SECRET;
+const jwtSecret = process.env.JWT_SECRET;
+if (!sessionSecret) {
+  throw new Error("SESSION_SECRET is not defined in the environment variables");
+}
+if (!jwtSecret) {
+  throw new Error("JWT_SECRET is not defined in the environment variables");
+}
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
 app.use("/scripts", express.static(path.join(__dirname, "scripts")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(
   session({
-    secret: "magma_crypt",
+    secret: sessionSecret,
     name: "uniqueSessionID",
     resave: false,
     saveUninitialized: false,

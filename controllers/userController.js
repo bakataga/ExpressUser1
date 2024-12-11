@@ -54,7 +54,7 @@ function traiteLogin(req, res) {
         // Générer un token JWT
         const token = jwt.sign(
           { id: user.id, username: user.username, role: role },
-          config.secret,
+          config.jwtSecret,
           {
             expiresIn: 86400, // 24 heures
           }
