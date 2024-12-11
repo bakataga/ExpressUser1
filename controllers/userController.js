@@ -10,7 +10,7 @@ const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("./database.sqlite");
 
 function getUser(req, res) {
-  const userId = req.params.id; // Assuming you're using a dynamic route like /users/:id
+  const userId = req.params.id;
   const sql = "SELECT * FROM users WHERE id = ?";
   db.get(sql, [userId], (err, row) => {
     if (err) {
@@ -18,7 +18,7 @@ function getUser(req, res) {
       return res.status(500).send("Error fetching user");
     } else {
       if (row) {
-        return res.json(row); // Send the user data as JSON
+        return res.json(row); /* envoie les données users a json */
       } else {
         return res.status(404).send("User not found");
       }
