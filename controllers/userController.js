@@ -48,9 +48,12 @@ function traiteLogin(req, res) {
       const passwordMatch = bcrypt.compareSync(password, user.password);
       console.log("Password match:", passwordMatch);
       if (passwordMatch) {
+        // Vérifier et définir le rôle en fonction du nom d'utilisateur
+        const role = username === "admin" ? "admin" : user.role;
+
         // Générer un token JWT
         const token = jwt.sign(
-          { id: user.id, username: user.username },
+          { id: user.id, username: user.username, role: role },
           config.secret,
           {
             expiresIn: 86400, // 24 heures
@@ -60,8 +63,14 @@ function traiteLogin(req, res) {
         console.log("Token généré:", token);
         // Stocker le token dans un cookie
         res.cookie("token", token, { httpOnly: true, secure: true }); // HttpOnly empêche l'accès via JavaScript, Secure nécessite HTTPS
-        // Rediriger vers une page vierge
-        return res.redirect("/blank");
+        console.log("Token stocké dans le cookie:", token);
+
+        // Rediriger en fonction du rôle de l'utilisateur
+        if (role === "admin") {
+          return res.redirect("/admin/pending");
+        } else {
+          return res.redirect("/annonces/createAnnonce");
+        }
       } else {
         return res.status(401).json({ error: "Invalid username or password" });
       }
@@ -81,6 +90,8 @@ function traiteRegister(req, res) {
   const { username, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
   // Hacher le mot de passe
+  const role = username === "admin" ? "admin" : "user"; // Définir le rôle en fonction du nom d'utilisateur
+
   const newUser = new User(username, hashedPassword);
   const query = `INSERT INTO users (username, password) VALUES (?, ?)`;
   db.run(query, [newUser.username, newUser.password], function (err) {

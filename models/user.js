@@ -5,10 +5,12 @@ class User {
   /**
    * @param {string} username
    * @param {string} password
+   * @param {string} role
    */
-  constructor(username, password) {
+  constructor(username, password, role = "user") {
     this.username = username;
     this.password = password;
+    this.role = role;
   }
 }
 

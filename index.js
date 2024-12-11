@@ -18,12 +18,15 @@ const jwt = require("jsonwebtoken");
 const session = require("express-session");
 const port = 3000;
 const path = require("path");
-const userRoutes = require("./userRoutes");
+const userRoutes = require("./routes/userRoutes");
+const annonceRoutes = require("./routes/annoncesRoute");
+const cookieParser = require("cookie-parser");
+const adminRoutes = require("./routes/adminRoute");
 
 app.use("/scripts", express.static(path.join(__dirname, "scripts")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
+app.use(cookieParser());
 app.use(
   session({
     secret: "magma_crypt",
@@ -35,7 +38,9 @@ app.use(
 );
 console.log(session);
 
-app.use("/", userRoutes);
+app.use("/users", userRoutes);
+app.use("/annonces", annonceRoutes);
+app.use("/admin", adminRoutes);
 
 app.get("/", (req, res) => {
   res.render("index");
