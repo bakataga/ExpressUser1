@@ -18,11 +18,12 @@ const jwt = require("jsonwebtoken");
 const session = require("express-session");
 const port = 3000;
 const path = require("path");
+const expressLayouts = require("express-ejs-layouts");
+
 const userRoutes = require("./routes/userRoutes");
 const annonceRoutes = require("./routes/annoncesRoute");
 const cookieParser = require("cookie-parser");
 const adminRoutes = require("./routes/adminRoute");
-
 const sessionSecret = process.env.SESSION_SECRET;
 const jwtSecret = process.env.JWT_SECRET;
 if (!sessionSecret) {
@@ -34,11 +35,14 @@ if (!jwtSecret) {
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(expressLayouts);
 
-app.use("/scripts", express.static(path.join(__dirname, "scripts")));
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+
 app.use(
   session({
     secret: sessionSecret,
@@ -55,7 +59,7 @@ app.use("/annonces", annonceRoutes);
 app.use("/admin", adminRoutes);
 
 app.get("/", (req, res) => {
-  res.render("index");
+  res.render("index", { title: "Accueil" });
 });
 
 app.get("/user", verifyToken, (req, res) => {

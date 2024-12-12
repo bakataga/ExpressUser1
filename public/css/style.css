@@ -1,0 +1,29 @@
+body {
+  background-color: #ffd700; /* Jaune foncé */
+}
+
+.navbar-custom {
+  background-color: yellow;
+  border: 2px solid black;
+}
+
+.navbar-custom .nav-link {
+  color: black;
+}
+
+.navbar-custom .navbar-brand {
+  color: black;
+}
+
+.btn-custom {
+  background-color: yellow;
+  color: black;
+  border: 2px solid black;
+}
+
+h1 {
+  font-family: "Arial", sans-serif;
+  font-size: 3em;
+  color: black;
+  text-align: center; /* Centrer le titre */
+}
