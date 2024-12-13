@@ -2,12 +2,16 @@ const User = require("../models/user");
 const userView = require("../views/userView");
 const loginView = require("../views/loginView");
 const registerView = require("../views/registerView");
-
+const userAnnoncesView = require("../views/userAnnoncesView");
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
 const bcrypt = require("bcrypt");
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("./database.sqlite");
+const fs = require("fs");
+const Annonce = require("../models/annonce");
+const path = require("path");
+const filePath = path.join(__dirname, "users.json");
 
 function getUser(req, res) {
   const userId = req.params.id;
@@ -24,9 +28,6 @@ function getUser(req, res) {
       }
     }
   });
-
-  console.log("GET /user");
-  res.json({ message: "User information retrieved successfully" });
 }
 
 function showLogin(req, res) {
@@ -66,7 +67,7 @@ function traiteLogin(req, res) {
         console.log("Token stocké dans le cookie:", token);
 
         // Rediriger en fonction du rôle de l'utilisateur
-        if (role === "admin") {
+        if (user.role === "admin") {
           return res.redirect("/admin/pending");
         } else {
           return res.redirect("/annonces/createAnnonce");
@@ -99,7 +100,7 @@ function traiteRegister(req, res) {
       console.error("Error inserting user into database:", err.message);
       return res.send("Error registering user");
     } else {
-      return res.send(`User registered with Username: ${newUser.username}`);
+      return res.redirect("/login");
     }
   });
 }
@@ -116,7 +117,25 @@ function getUsers(req, res) {
   });
 }
 
-const fs = require("fs");
+function getAnnoncesByUser(req, res) {
+  const userId = req.userId;
+  // Récupérer l'ID de l'utilisateur connecté
+  const annonce = new Annonce(db);
+  annonce
+    .getAnnoncesByUser(userId)
+    .then((annonces) => {
+      res.send(userAnnoncesView(annonces));
+    })
+    .catch((err) => {
+      console.error(
+        "Erreur lors de la récupération des annonces de l'utilisateur:",
+        err.message
+      );
+      res
+        .status(500)
+        .send("Erreur lors de la récupération des annonces de l'utilisateur");
+    });
+}
 
 function exportUsersToJson(req, res) {
   const query = "SELECT * FROM users";
@@ -147,4 +166,5 @@ module.exports = {
   traiteRegister,
   getUsers,
   exportUsersToJson,
+  getAnnoncesByUser,
 };

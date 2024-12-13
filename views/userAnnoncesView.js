@@ -1,11 +1,11 @@
-function createAnnonceView() {
-  return `
+function userAnnoncesView(annonces) {
+  let html = `
     <!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Créer une Annonce</title>
+        <title>Vos Annonces</title>
         <link href="/css/style.css" rel="stylesheet" />
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
       </head>
@@ -22,7 +22,7 @@ function createAnnonceView() {
                 <a class="nav-link" href="/">Se déconnecter</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/annonces/userAnnonces">Mes annonces</a>
+                <a class="nav-link" href="/annonces/createAnnonce">Créer une annonce</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/annonces/allAnnonces">Toutes les annonces</a>
@@ -33,18 +33,21 @@ function createAnnonceView() {
 
         <!-- Contenu principal -->
         <div class="container mt-5">
-          <h1>Créer une Annonce</h1>
-          <form action="/annonces/createAnnonce" method="POST">
-            <label for="titre">Titre:</label>
-            <input type="text" id="titre" name="titre" required><br>
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" required></textarea><br>
-            <label for="prix">Prix:</label>
-            <input type="number" id="prix" name="prix" required><br>
-            <button type="submit">Créer l'annonce</button>
-          </form>
-        </div>
+          <h1>Vos Annonces</h1>
+  `;
 
+  annonces.forEach((annonce) => {
+    html += `
+      <div class="poster">
+        <h2>${annonce.titre}</h2>
+        <p>${annonce.description}</p>
+        <p>Prix: ${annonce.prix} €</p>
+      </div>
+    `;
+  });
+
+  html += `
+        </div>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -52,6 +55,8 @@ function createAnnonceView() {
       </body>
     </html>
   `;
+
+  return html;
 }
 
-module.exports = createAnnonceView;
+module.exports = userAnnoncesView;

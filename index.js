@@ -12,6 +12,8 @@ const {
   traiteRegister,
   exportUsersToJson,
 } = require("./controllers/userController");
+
+
 const bodyParser = require("body-parser");
 const verifyToken = require("./middlewares/verifyToken");
 const jwt = require("jsonwebtoken");

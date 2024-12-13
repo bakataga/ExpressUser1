@@ -4,7 +4,8 @@ const verifyToken = require("../middlewares/verifyToken");
 const createAnnonceView = require("../views/createAnnonce");
 const {
   createAnnonce,
-  getAnnonces,
+  getAllAnnonces,
+  getUserAnnonces,
 } = require("../controllers/annoncesController");
 
 router.get("/createAnnonce", verifyToken, (req, res) => {
@@ -12,5 +13,6 @@ router.get("/createAnnonce", verifyToken, (req, res) => {
 });
 
 router.post("/createAnnonce", verifyToken, createAnnonce);
-router.get("/", verifyToken, getAnnonces);
+router.get("/userAnnonces", verifyToken, getUserAnnonces);
 module.exports = router;
+router.get("/allAnnonces", verifyToken, getAllAnnonces);
