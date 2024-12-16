@@ -8,7 +8,15 @@ function createAnnonceView() {
         <title>Créer une Annonce</title>
         <link href="/css/style.css" rel="stylesheet" />
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-      </head>
+     
+      <script>
+      history.pushState(null, null, location.href);
+window.onpopstate = function () {
+    history.go(1);
+};
+</script>
+     
+        </head>
       <body class="annonces-page">
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-custom">
@@ -31,25 +39,29 @@ function createAnnonceView() {
           </div>
         </nav>
 
-        <!-- Contenu principal -->
+       <!-- Contenu principal -->
         <div class="container mt-5">
-          <h1>Créer une Annonce</h1>
-          <form action="/annonces/createAnnonce" method="POST">
-            <label for="titre">Titre:</label>
-            <input type="text" id="titre" name="titre" required><br>
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" required></textarea><br>
-            <label for="prix">Prix:</label>
-            <input type="number" id="prix" name="prix" required><br>
-            <button type="submit">Créer l'annonce</button>
-          </form>
-        </div>
-
+         <h1>Créer une Annonce</h1> 
+         <form action="/annonces/createAnnonce" method="POST" class="form-container"> 
+         <div class="form-group">
+          <label for="titre">Titre:</label> 
+          <input type="text" class="form-control input-black-border" id="titre" name="titre" required> 
+          </div> 
+          <div class="form-group"> 
+          <label for="description">Description:</label> 
+          <textarea class="form-control input-black-border" id="description" name="description" required></textarea> 
+          </div> <div class="form-group"> 
+          <label for="prix">Prix:</label>
+           <input type="number" class="form-control input-black-border" id="prix" name="prix" required> 
+           </div> <button type="submit" class="btn btn-custom"> 
+           <i class="fas fa-envelope"></i> Créer l'annonce </button>
+            </form> 
+            </div>
+            
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <script src="/js/script.js"></script>
-      </body>
+       
     </html>
   `;
 }

@@ -13,11 +13,10 @@ const {
   exportUsersToJson,
 } = require("./controllers/userController");
 
-
 const bodyParser = require("body-parser");
 const verifyToken = require("./middlewares/verifyToken");
 const jwt = require("jsonwebtoken");
-const session = require("express-session");
+
 const port = 3000;
 const path = require("path");
 const expressLayouts = require("express-ejs-layouts");
@@ -45,17 +44,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.use(
-  session({
-    secret: sessionSecret,
-    name: "uniqueSessionID",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false },
-  })
-);
-console.log(session);
+app.use((req, res, next) => {
+  res.setHeader("Cache-Control", "no-store,no-cache,must-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  next();
+});
 
+app.use("/", userRoutes);
 app.use("/users", userRoutes);
 app.use("/annonces", annonceRoutes);
 app.use("/admin", adminRoutes);

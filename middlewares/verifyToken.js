@@ -2,21 +2,24 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/config");
 
 function verifyToken(req, res, next) {
-  const token = req.cookies.token; // Récupérer le token depuis le cookie  if (!token)
+  const token = req.cookies.token || req.headers["authorization"];
   if (!token) {
-    return res.status(403).send({ auth: false, message: "No token provided." });
+    return res.status(401).send("Access Denied: No Token Provided!");
   }
-  jwt.verify(token, config.jwtSecret, (err, decoded) => {
-    if (err)
-      return res
-        .status(500)
-        .send({ auth: false, message: "Failed to authenticate token." });
+  try {
+    const decoded = jwt.verify(token, config.jwtSecret);
 
-    // Si tout est bon, sauvegarder l'id pour les prochaines requêtes
-    req.userId = decoded.id;
-    req.userRole = decoded.role;
-    next();
-  });
+    // Vérifier que le token décodé est de type JwtPayload
+    if (typeof decoded !== 'string' && 'id' in decoded && 'role' in decoded) {
+      req.userId = decoded.id;
+      req.userRole = decoded.role;
+      next();
+    } else {
+      return res.status(401).send("Invalid Token");
+    }
+  } catch (err) {
+    return res.status(401).send("Invalid Token");
+  }
 }
 
 module.exports = verifyToken;

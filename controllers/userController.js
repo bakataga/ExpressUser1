@@ -12,6 +12,7 @@ const fs = require("fs");
 const Annonce = require("../models/annonce");
 const path = require("path");
 const filePath = path.join(__dirname, "users.json");
+const fetch = require("node-fetch");
 
 function getUser(req, res) {
   const userId = req.params.id;
@@ -54,9 +55,10 @@ function traiteLogin(req, res) {
 
         // Générer un token JWT
         const token = jwt.sign(
-          { id: user.id, username: user.username, role: role },
+          { id: user.id, username: user.username, role: user.role },
           config.jwtSecret,
           {
+            /* L'ID de l'utilisateur est inclus dans le token. Cela permet d'identifier l'utilisateur de manière unique. */
             expiresIn: 86400, // 24 heures
           }
         );
@@ -94,7 +96,7 @@ function traiteRegister(req, res) {
   const role = username === "admin" ? "admin" : "user"; // Définir le rôle en fonction du nom d'utilisateur
 
   const newUser = new User(username, hashedPassword);
-  const query = `INSERT INTO users (username, password) VALUES (?, ?)`;
+  const query = `INSERT INTO users (username, password,role) VALUES (?, ?,?)`;
   db.run(query, [newUser.username, newUser.password], function (err) {
     if (err) {
       console.error("Error inserting user into database:", err.message);
@@ -157,6 +159,53 @@ function exportUsersToJson(req, res) {
   });
 }
 
+function logout(req, res) {
+  res.clearCookie("token");
+  res.redirect("/login");
+}
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    const cookieValue = parts.pop();
+    if (cookieValue) {
+      return cookieValue.split(";").shift();
+    }
+  }
+  return null;
+}
+
+function getProfile(req, res) {
+  let jwtToken = req.cookies.token; // Extraire le jeton JWT depuis le cookie
+
+  fetch("http://localhost:3000/user", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${jwtToken}`, // Utiliser le jeton JWT extrait du cookie
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.token) {
+        console.log("Token:", data.token);
+        jwtToken = data.token; /* Stocker le jeton JWT */
+      } else {
+        throw new Error("Token not received");
+      }
+    })
+
+    .catch((error) => {
+      console.error("Error fetching profile:", error);
+      res.status(500).send("Error fetching profile");
+    });
+}
+
 module.exports = {
   getUser,
   userView,
@@ -167,4 +216,7 @@ module.exports = {
   getUsers,
   exportUsersToJson,
   getAnnoncesByUser,
+  logout,
+  getCookie,
+  getProfile,
 };
