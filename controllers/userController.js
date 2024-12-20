@@ -121,6 +121,32 @@ function getUsers(req, res) {
 
 function getAnnoncesByUser(req, res) {
   const userId = req.userId;
+  /* ID de l'utilisateur extrait du token
+   JWT */
+  const annoncesQuery = `SELECT * FROM annonces WHERE utilisateur_id = ?`;
+  const favorisQuery = ` SELECT annonces.* FROM annonces JOIN favorites ON annonces.id = favorites.annonce_id WHERE favorites.user_id = ? `;
+  db.all(annoncesQuery, [userId], (err, annonces) => {
+    if (err) {
+      console.error("Error fetching user annonces:", err.message);
+      return res
+        .status(500)
+        .send("Erreur lors de la récupération des annonces de l'utilisateur");
+    }
+    db.all(favorisQuery, [userId], (err, favoris) => {
+      if (err) {
+        console.error("Error fetching user favorites:", err.message);
+        return res
+          .status(500)
+          .send("Erreur lors de la récupération des favoris de l'utilisateur");
+      }
+      const userAnnoncesView = require("../views/userAnnoncesView");
+      res.send(userAnnoncesView(annonces, favoris));
+    });
+  });
+}
+
+/* function getAnnoncesByUser(req, res) {
+  const userId = req.userId;
   // Récupérer l'ID de l'utilisateur connecté
   const annonce = new Annonce(db);
   annonce
@@ -138,7 +164,7 @@ function getAnnoncesByUser(req, res) {
         .send("Erreur lors de la récupération des annonces de l'utilisateur");
     });
 }
-
+ */
 function exportUsersToJson(req, res) {
   const query = "SELECT * FROM users";
   db.all(query, [], (err, rows) => {
@@ -206,6 +232,28 @@ function getProfile(req, res) {
     });
 }
 
+function getUserFavorites(req, res) {
+  const userId = req.userId; // ID de l'utilisateur extrait du token JWT
+
+  const query = `
+    SELECT annonces.* FROM annonces
+    JOIN favorites ON annonces.id = favorites.annonce_id
+    WHERE favorites.user_id = ?
+  `;
+
+  db.all(query, [userId], (err, favoris) => {
+    if (err) {
+      console.error("Error fetching user favorites:", err.message);
+      return res
+        .status(500)
+        .send("Erreur lors de la récupération des favoris de l'utilisateur");
+    }
+
+    const userFavoritesView = require("../views/userFavoriteView");
+    res.send(userFavoritesView(favoris));
+  });
+}
+
 module.exports = {
   getUser,
   userView,
@@ -219,4 +267,5 @@ module.exports = {
   logout,
   getCookie,
   getProfile,
+  getUserFavorites,
 };

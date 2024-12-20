@@ -16,7 +16,7 @@ const {
 const bodyParser = require("body-parser");
 const verifyToken = require("./middlewares/verifyToken");
 const jwt = require("jsonwebtoken");
-
+const favoriteRoutes = require("./routes/routeFavorite");
 const port = 3000;
 const path = require("path");
 const expressLayouts = require("express-ejs-layouts");
@@ -55,6 +55,7 @@ app.use("/", userRoutes);
 app.use("/users", userRoutes);
 app.use("/annonces", annonceRoutes);
 app.use("/admin", adminRoutes);
+app.use("/favorites", favoriteRoutes);
 
 app.get("/", (req, res) => {
   res.render("index", { title: "Accueil" });

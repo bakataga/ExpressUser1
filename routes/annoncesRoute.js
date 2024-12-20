@@ -2,11 +2,15 @@ const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middlewares/verifyToken");
 const createAnnonceView = require("../views/createAnnonce");
+const annoncesController = require("../controllers/annoncesController");
+
 const {
   createAnnonce,
   getAllAnnonces,
   getUserAnnonces,
-} = require("../controllers/annoncesController");
+  editAnnonce,
+  deleteAnnonce,
+} = annoncesController;
 
 router.get("/createAnnonce", verifyToken, (req, res) => {
   res.send(createAnnonceView());
@@ -14,5 +18,9 @@ router.get("/createAnnonce", verifyToken, (req, res) => {
 
 router.post("/createAnnonce", verifyToken, createAnnonce);
 router.get("/userAnnonces", verifyToken, getUserAnnonces);
+router.get("/allAnnonces", getAllAnnonces); // Suppression de verifyToken pour permettre l'accès public
+
+router.put("/edit/:id", verifyToken, editAnnonce);
+router.delete("/delete/:id", verifyToken, deleteAnnonce);
+
 module.exports = router;
-router.get("/allAnnonces", verifyToken, getAllAnnonces);

@@ -7,18 +7,15 @@ function allAnnoncesView(annonces) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Toutes les Annonces</title>
         <link href="/css/style.css" rel="stylesheet" />
-       <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-      
-      <script>
-      history.pushState(null, null, location.href);
-window.onpopstate = function () {
-    history.go(1);
-};
-
-
-
-</script>
-       </head>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <script src="/js/addFavorite.js"></script>
+        <script>
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+        };
+        </script>
+      </head>
       <body class="annonces-page">
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-custom">
@@ -34,7 +31,7 @@ window.onpopstate = function () {
               <li class="nav-item">
                 <a class="nav-link" href="/annonces/createAnnonce">Créer une annonce</a>
               </li>
-               <li class="nav-item">
+              <li class="nav-item">
                 <a class="nav-link" href="/annonces/userAnnonces">Mes annonces</a>
               </li>
             </ul>
@@ -47,13 +44,12 @@ window.onpopstate = function () {
   `;
 
   annonces.forEach((annonce) => {
-    html += `
-      <div class="poster">
+    html += `<div class="poster">
         <h2>${annonce.titre}</h2>
         <p>${annonce.description}</p>
         <p>Prix: ${annonce.prix} €</p>
-      </div>
-    `;
+        <button onclick="addFavoriteToUser(${annonce.id})">Ajouter aux Favoris</button>
+      </div>`;
   });
 
   html += `
@@ -61,7 +57,6 @@ window.onpopstate = function () {
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-       
       </body>
     </html>
   `;

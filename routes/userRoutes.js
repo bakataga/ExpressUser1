@@ -11,7 +11,13 @@ router.post("/login", userController.traiteLogin);
 router.get("/register", userController.showRegister);
 router.post("/register", userController.traiteRegister);
 router.get("/user", userController.getProfile);
+router.get(
+  "/annonces/userAnnonces",
+  verifyToken,
+  userController.getAnnoncesByUser
+);
 
+router.get("/userFavorites", verifyToken, userController.getUserFavorites);
 // Route pour la page vierge
 router.get("/createAnnonce", (req, res) => {
   res.sendFile(path.join(__dirname, "./views/createAnnonce.js"));

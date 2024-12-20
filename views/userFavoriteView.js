@@ -8,7 +8,7 @@ function userAnnoncesView(annonces, favoris) {
         <title>Vos Annonces</title>
         <link href="/css/style.css" rel="stylesheet" />
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-        <script src="/js/manageAnnonces.js"></script>
+        <script src="/js/addFavorite.js"></script>
       </head>
       <body class="annonces-page">
         <!-- Navbar -->
@@ -39,12 +39,10 @@ function userAnnoncesView(annonces, favoris) {
 
   annonces.forEach((annonce) => {
     html += `
-      <div class="poster" id="annonce-${annonce.id}">
+      <div class="poster">
         <h2>${annonce.titre}</h2>
         <p>${annonce.description}</p>
         <p>Prix: ${annonce.prix} €</p>
-        <button onclick="editAnnonce(${annonce.id})">Modifier</button>
-        <button onclick="deleteAnnonce(${annonce.id})">Supprimer</button>
       </div>
     `;
   });
@@ -57,11 +55,10 @@ function userAnnoncesView(annonces, favoris) {
 
   favoris.forEach((favori) => {
     html += `
-      <div class="poster" id="favori-${favori.id}">
+      <div class="poster">
         <h3>${favori.titre}</h3>
         <p>${favori.description}</p>
         <p>Prix: ${favori.prix} €</p>
-        <button onclick="removeFavorite(${favori.id})">Supprimer</button>
       </div>
     `;
   });

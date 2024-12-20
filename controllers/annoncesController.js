@@ -91,10 +91,45 @@ function getAllAnnonces(req, res) {
     });
 }
 
+function editAnnonce(req, res) {
+  const annonceId = req.params.id;
+  const { titre, description, prix } = req.body;
+
+  const query = `UPDATE annonces SET titre = ?, description = ?, prix = ? WHERE id = ?`;
+  db.run(query, [titre, description, prix, annonceId], function (err) {
+    if (err) {
+      console.error("Error editing annonce:", err.message);
+      return res
+        .status(500)
+        .json({ success: false, message: "Error editing annonce" });
+    } else {
+      return res.status(200).json({ success: true });
+    }
+  });
+}
+
+function deleteAnnonce(req, res) {
+  const annonceId = req.params.id;
+
+  const query = `DELETE FROM annonces WHERE id = ?`;
+  db.run(query, [annonceId], function (err) {
+    if (err) {
+      console.error("Error deleting annonce:", err.message);
+      return res
+        .status(500)
+        .json({ success: false, message: "Error deleting annonce" });
+    } else {
+      return res.status(200).json({ success: true });
+    }
+  });
+}
+
 module.exports = {
   createAnnonce,
   getPendingAnnonces,
   approveAnnonce,
   getUserAnnonces,
   getAllAnnonces,
+  editAnnonce,
+  deleteAnnonce,
 };

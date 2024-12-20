@@ -33,4 +33,23 @@ db.serialize(() => {
   )`);
 });
 
+db.serialize(() => {
+  db.run(
+    `CREATE TABLE IF NOT EXISTS favorites 
+  ( id INTEGER PRIMARY KEY AUTOINCREMENT, 
+   user_id INTEGER, 
+   annonce_id INTEGER, 
+   FOREIGN KEY 
+   (user_id) REFERENCES users(id), 
+   FOREIGN KEY (annonce_id) REFERENCES annonces(id) )`,
+    (err) => {
+      if (err) {
+        console.error("Error creating table:", err.message);
+      } else {
+        console.log("Table favorites created successfully.");
+      }
+    }
+  );
+});
+
 module.exports = db;
